@@ -28,6 +28,7 @@ public class PlantSegmentSpline : MonoBehaviour
             angle += 360f / branches.Item1.Count;
             i++;
         }
+        transform.position = new Vector3(0, -0.2f, 0);
     }
     public static Tuple<List<List<Segment>>, string[]> ParseCSV(string dataset)
     {
@@ -66,7 +67,7 @@ public class PlantSegmentSpline : MonoBehaviour
         int j = 0;
         for (int i = 0; i < branchLength; i++)
         {
-            branchSegments.Add(new Vector3(segments[i].Value,i,0));
+            branchSegments.Add(new Vector3(segments[i].Value,i-0.2f,0));
             j++;
         }
         //branchSegments.Add(new Vector3(0, 0, 0));
@@ -75,7 +76,7 @@ public class PlantSegmentSpline : MonoBehaviour
         GameObject Z1_Branch = Instantiate(StemTemplate);
         Z1_Branch.name = "Stem_" + datasetID;
         Z1_Branch.transform.parent = transform;
-        Z1_Branch.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        Z1_Branch.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         SplineContainer splineContainer = Z1_Branch.GetComponent<SplineContainer>();
         foreach (Vector3 segment in branchSegments)
             splineContainer.Spline.Add(new BezierKnot(segment));
@@ -99,7 +100,7 @@ public class PlantSegmentSpline : MonoBehaviour
         line.Radius = radius;
 
         Z1_Branch.GetComponentInChildren<TextMeshPro>().text = datasetID;
-        Z1_Branch.GetComponentInChildren<TextMeshPro>().gameObject.transform.position = new Vector3(1.2f,(j-1)/10f,0);
+        Z1_Branch.GetComponentInChildren<TextMeshPro>().gameObject.transform.position = new Vector3(0.12f,(j-1)/100f-0.2f,0);
         Z1_Branch.GetComponentInChildren<TextMeshPro>().gameObject.transform.Rotate(new Vector3(90, -90, 0));
         Z1_Branch.GetComponentInChildren<TextMeshPro>().color = Color.green;
         Z1_Branch.GetComponentInChildren<TextMeshPro>().gameObject.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
@@ -113,7 +114,8 @@ public class PlantSegmentSpline : MonoBehaviour
         GameObject leaf = Instantiate(LeafTemplate);
         leaf.name = "Leaf_" + datasetID;
         leaf.transform.Rotate(new Vector3(0, angle, 0)); // Rotate based on the angle provided
-        leaf.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        leaf.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        leaf.transform.parent = transform;
 
         int pointsCount = segments.Count;
 
@@ -124,8 +126,8 @@ public class PlantSegmentSpline : MonoBehaviour
         // Generate vertices
         for (int i = 0; i < pointsCount; i++)
         {
-            Vector3 segmentVertex = new Vector3(segments[i].Value, i, 0);
-            Vector3 yAxisVertex = new Vector3(0, i, 0); // Vertex on the y-axis at the same y-level
+            Vector3 segmentVertex = new Vector3(segments[i].Value, i-0.2f, 0);
+            Vector3 yAxisVertex = new Vector3(0, i-0.2f, 0); // Vertex on the y-axis at the same y-level
 
             vertices.Add(segmentVertex); // Add the segment vertex
             vertices.Add(yAxisVertex); // Add the corresponding y-axis vertex
@@ -187,9 +189,9 @@ public class PlantSegmentSpline : MonoBehaviour
 
         // Create vertices for the triangle, flipped upside down
         Vector3[] triangleVertices = new Vector3[3];
-        triangleVertices[0] = new Vector3(1 + thickness / 2, 0, 0); // Peak vertex, now at the bottom
-        triangleVertices[1] = new Vector3(1 + thickness, lastRowIndex/20f, 0); // Right base vertex
-        triangleVertices[2] = new Vector3(0, lastRowIndex/20f, 0); // Left base vertex
+        triangleVertices[0] = new Vector3((1 + thickness / 2)/10f, 0, 0); // Peak vertex, now at the bottom
+        triangleVertices[1] = new Vector3((1 + thickness)/10f, lastRowIndex/200f, 0); // Right base vertex
+        triangleVertices[2] = new Vector3(0, lastRowIndex/200f, 0); // Left base vertex
 
         // Create mesh and assign data
         Mesh triangleMesh = new Mesh();
@@ -208,7 +210,7 @@ public class PlantSegmentSpline : MonoBehaviour
         triangleMesh.RecalculateNormals();
 
         // Position the triangle appropriately based on the segment's position
-        pedal.transform.position = new Vector3(0, 4, 0);
+        pedal.transform.position = new Vector3(0, 0.4f, 0);
         pedal.transform.Rotate(new Vector3(30, angle, 0));
     }
 
